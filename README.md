@@ -13,17 +13,17 @@ placeholders
 
 1. make sure you are using a python virtual environment
 
-    virtualenv ~/Dev/virtualenv/projectname
-    . ~/Dev/virtualenv/projectname/bin/activate
-    cd ~/Dev/projects/projectname/
+     virtualenv ~/Dev/virtualenv/projectname;
+     . ~/Dev/virtualenv/projectname/bin/activate;
+     cd ~/Dev/projects/projectname/;
 
 2. install it from pypi
 
-    pip install cmsplugin-embedded-pages
+    `pip install cmsplugin-embedded-pages`
 
 3. or, install it from github
 
-    pip install git+https://github.com/airtonix/cmsplugin-embedded-pages
+    `pip install git+https://github.com/airtonix/cmsplugin-embedded-pages`
 
 
 ## Configuration
