@@ -70,32 +70,50 @@ In fact, anywhere django looks for templates, you can place the following tree :
 
 ### Customising Templates
 
-Templates in all groups are provided the context :
-
-a CMSPlugin has many useful attributes for you to use, the main one
-is `plugin.instance` a reference to the settings model.
+All DjangoCMS plugin templates provided the context :
 
 >     plugin' :
 >         An instance of CMSPlugin, which itself provides reference to either
 >         of the settings models as outlined below.
+
+>     plugin.instance
+>          An instance of the settings model unique to the plugin placed
+>          in a placeholder.
+
+>          group_template
+>               Chosen template for groups of pages
+
+>          page_template
+>               Chosen template for singular pages.
+
+>          include_root
+>               boolean that is used to indicate whether or not to render
+>               the root page content. This will always be False when the page
+>               containing the placeholder in which this plugin is place is
+>               the same as the root page.
+
+>          depth
+>               PositiveInteger that indicates how deep into the page hierachy
+>               tree the plugin will traverse in order to seek pages for
+>               embedding.
+
+>          placeholders.all
+>               ManyToMany field of page placeholders from which content will
+>               be used for the output.
+
 
 #### base.html
 
 base.html in the `cmsplugin_configurableproduct` directory is used to load the
 selected template chosen in the administration interface.
 
-You should probably only touch this if you know absolutley what you are doing.
+You should probably only touch this if you know what you are doing.
+
 
 #### ./layouts/groups/*.html
 
-Templates used to render a group of pages.
+Templates used to render a group of pages and are provided the context :
 
-templates here are provided the context :
-
->     plugin.instance
->          template
->               Chosen template.
->
 >     EmbeddedPages
 >        A list of cms.Page(s) that match the settings of the plugin instance.
 
@@ -111,7 +129,6 @@ However in the default templates I provide, the page templates use the following
 
 >     EmbeddedPage
 >        A single instance of a cms.Page
-
 
 
 ## Contributions
