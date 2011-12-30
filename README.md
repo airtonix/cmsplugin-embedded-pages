@@ -56,13 +56,16 @@ And you had a django application named `SomethingSomethingSomething` at :
 
 Then templates for this plugin could be found at :
 
-    ~/Dev/Django/MyProjectName/SomethingSomethingSomething/templates/cmsplugin_embeddedpages/layouts/*.html
+    ~/Dev/Django/MyProjectName/SomethingSomethingSomething/templates/cmsplugin_embeddedpages/
 
 In fact, anywhere django looks for templates, you can place the following tree :
 
     /cmsplugin_embeddedpages
         /layouts
-            /*.html
+            /groups
+                /*.html
+            /pages
+                /*.html
 
 
 ### Customising Templates
@@ -81,8 +84,11 @@ is `plugin.instance` a reference to the settings model.
 base.html in the `cmsplugin_configurableproduct` directory is used to load the
 selected template chosen in the administration interface.
 
+You should probably only touch this if you know absolutley what you are doing.
 
-#### ./layouts/*.html
+#### ./layouts/groups/*.html
+
+Templates used to render a group of pages.
 
 templates here are provided the context :
 
@@ -90,9 +96,21 @@ templates here are provided the context :
 >          template
 >               Chosen template.
 >
->     Pages
->        A list of cms.Page(s)
+>     EmbeddedPages
+>        A list of cms.Page(s) that match the settings of the plugin instance.
 
+
+#### ./layouts/pages/*.html
+
+Templates used to render individual pages.
+
+Since templates here are used by the group template via `{% include %}` they
+have all the same context variables as the group templates.
+
+However in the default templates I provide, the page templates use the following:
+
+>     EmbeddedPage
+>        A single instance of a cms.Page
 
 
 

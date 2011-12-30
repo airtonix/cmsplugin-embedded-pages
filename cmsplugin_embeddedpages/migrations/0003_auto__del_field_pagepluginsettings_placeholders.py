@@ -8,20 +8,25 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'PagePluginSettings'
-        db.create_table('cmsplugin_pagepluginsettings', (
-            ('cmsplugin_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['cms.CMSPlugin'], unique=True, primary_key=True)),
-            ('root', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['cms.Page'])),
-            ('include_root', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('template', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True)),
+        # Deleting field 'PagePluginSettings.placeholders'
+        db.delete_column('cmsplugin_pagepluginsettings', 'placeholders')
+
+        # Adding M2M table for field placeholders on 'PagePluginSettings'
+        db.create_table('cmsplugin_embeddedpages_pagepluginsettings_placeholders', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('pagepluginsettings', models.ForeignKey(orm['cmsplugin_embeddedpages.pagepluginsettings'], null=False)),
+            ('placeholder', models.ForeignKey(orm['cms.placeholder'], null=False))
         ))
-        db.send_create_signal('cmsplugin_embeddedpages', ['PagePluginSettings'])
+        db.create_unique('cmsplugin_embeddedpages_pagepluginsettings_placeholders', ['pagepluginsettings_id', 'placeholder_id'])
 
 
     def backwards(self, orm):
         
-        # Deleting model 'PagePluginSettings'
-        db.delete_table('cmsplugin_pagepluginsettings')
+        # Adding field 'PagePluginSettings.placeholders'
+        db.add_column('cmsplugin_pagepluginsettings', 'placeholders', self.gf('django.db.models.fields.CharField')(max_length=128, null=True, blank=True), keep_default=False)
+
+        # Removing M2M table for field placeholders on 'PagePluginSettings'
+        db.delete_table('cmsplugin_embeddedpages_pagepluginsettings_placeholders')
 
 
     models = {
@@ -78,6 +83,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'PagePluginSettings', 'db_table': "'cmsplugin_pagepluginsettings'", '_ormbases': ['cms.CMSPlugin']},
             'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
             'include_root': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'placeholders': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['cms.Placeholder']", 'null': 'True', 'blank': 'True'}),
             'root': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Page']"}),
             'template': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'})
         },

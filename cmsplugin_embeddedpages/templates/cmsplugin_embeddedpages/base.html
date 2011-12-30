@@ -1,16 +1,1 @@
-{% load cms_tags sekizai_tags %}{% spaceless %}
-{% addtoblock 'css' %}<link type="text/css"
-                            rel='stylesheet/less'
-                            media='screen,projector'
-                            href='{{STATIC_URL}}css/embeded-pages.less' />{% endaddtoblock %}
-
-<div id="{{ plugin.id_attr }}"
-     class="cmsplugin cmsplugin-embeded-pages embedded-page-for-{{ plugin.instance.page_id|slugify }}"
-     data-root-id="{{ plugin.instance.page_id }}"
-     data-pages="{{ EmbededPages|length }}">
-    {% for page in EmbededPages %}
-        {% if not request.current_page == page %}
-          {% include plugin.instance.template %}
-        {% endif %}
-    {% endfor %}
-</div>{% endspaceless %}
+{% include plugin.instance.group_template %}

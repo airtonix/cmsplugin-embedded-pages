@@ -3,25 +3,30 @@ from django.forms import ModelChoiceField, ChoiceField
 
 from .lib.choices import (
   DynamicTemplateChoices,
-  PlaceholdersDynamicChoices
-)
+  )
 
 from .models import (
+  PagePluginSettings,
   TEMPLATE_PATH,
-  EmbedPagesPlugin,
+  GROUP_TEMPLATE_PATH,
+  PAGE_TEMPLATE_PATH,
 )
 
 
-class EmbedPagesAdminForm(ModelForm):
+class PagePluginAdminForm(ModelForm):
 
     class Meta :
-        model = EmbedPagesPlugin
+        model = PagePluginSettings
 
     def __init__(self, *args, **kwargs):
-        super(EmbedPagesAdminForm, self).__init__(*args,**kwargs)
-        self.fields['template'].choices = DynamicTemplateChoices(
-                     path = TEMPLATE_PATH,
+        super(PagePluginAdminForm, self).__init__(*args,**kwargs)
+
+        self.fields['group_template'].choices = DynamicTemplateChoices(
+                     path = GROUP_TEMPLATE_PATH,
                   include = '.html',
                   exclude = 'base')
 
-        self.fields['placeholders'].choices = PlaceholdersDynamicChoices()
+        self.fields['page_template'].choices = DynamicTemplateChoices(
+                     path = PAGE_TEMPLATE_PATH,
+                  include = '.html',
+                  exclude = 'base')

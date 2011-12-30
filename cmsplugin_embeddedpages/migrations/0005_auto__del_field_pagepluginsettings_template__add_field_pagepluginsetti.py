@@ -8,20 +8,26 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'PagePluginSettings'
-        db.create_table('cmsplugin_pagepluginsettings', (
-            ('cmsplugin_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['cms.CMSPlugin'], unique=True, primary_key=True)),
-            ('root', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['cms.Page'])),
-            ('include_root', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('template', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True)),
-        ))
-        db.send_create_signal('cmsplugin_embeddedpages', ['PagePluginSettings'])
+        # Deleting field 'PagePluginSettings.template'
+        db.delete_column('cmsplugin_pagepluginsettings', 'template')
+
+        # Adding field 'PagePluginSettings.group_template'
+        db.add_column('cmsplugin_pagepluginsettings', 'group_template', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True), keep_default=False)
+
+        # Adding field 'PagePluginSettings.page_template'
+        db.add_column('cmsplugin_pagepluginsettings', 'page_template', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Deleting model 'PagePluginSettings'
-        db.delete_table('cmsplugin_pagepluginsettings')
+        # Adding field 'PagePluginSettings.template'
+        db.add_column('cmsplugin_pagepluginsettings', 'template', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True), keep_default=False)
+
+        # Deleting field 'PagePluginSettings.group_template'
+        db.delete_column('cmsplugin_pagepluginsettings', 'group_template')
+
+        # Deleting field 'PagePluginSettings.page_template'
+        db.delete_column('cmsplugin_pagepluginsettings', 'page_template')
 
 
     models = {
@@ -77,9 +83,12 @@ class Migration(SchemaMigration):
         'cmsplugin_embeddedpages.pagepluginsettings': {
             'Meta': {'object_name': 'PagePluginSettings', 'db_table': "'cmsplugin_pagepluginsettings'", '_ormbases': ['cms.CMSPlugin']},
             'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
+            'depth': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
+            'group_template': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'include_root': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'root': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Page']"}),
-            'template': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'})
+            'page_template': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
+            'placeholders': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['cms.Placeholder']", 'null': 'True', 'blank': 'True'}),
+            'root': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Page']"})
         },
         'sites.site': {
             'Meta': {'ordering': "('domain',)", 'object_name': 'Site', 'db_table': "'django_site'"},
