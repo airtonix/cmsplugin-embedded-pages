@@ -74,9 +74,9 @@ class PagePluginSettings(CMSPlugin):
     root = models.ForeignKey("cms.Page",
       help_text="""Start including pages at a page which has this ID""")
 
-    placeholders = models.ManyToManyField('cms.Placeholder',
-      blank=True, null=True, help_text="""Only render content
-      within these placeholders.""")
+    placeholders = models.CharField(blank=True, null=True, 
+      choices = PlaceholdersDynamicChoices(), max_length=128,
+      help_text="""Only render content within these placeholders.""")
 
     include_root = models.BooleanField(default=True,
       help_text="""Should the root page also be included in the output?
