@@ -3,7 +3,7 @@ from setuptools import (
   setup,
   find_packages,
 )
-import cmsplugin_embeddedpages
+from cmsplugin_embeddedpages import __version__ as VERSION
 
 
 def read(fname):
@@ -11,7 +11,7 @@ def read(fname):
 
 setup(
     name='cmsplugin-embedded-pages',
-    version=cmsplugin_embeddedpages.__version__,
+    version=".".join(str(i) for i in VERSION),
     classifiers = (
         'Development Status :: 4 - Beta',
         'Framework :: Django',
