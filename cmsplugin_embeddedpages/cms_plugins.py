@@ -26,8 +26,8 @@ class PagePlugin(CMSPluginBase):
     render_template = "cmsplugin_embeddedpages/base.html"
     default_template = os.path.join(TEMPLATE_PATH, "default.html")
     admin_preview = False
-    form = EmbedPagesAdminForm
-#    inlines = (EmbeddedPageFilterInlineAdmin, )
+    form = PagePluginAdminForm
+#    inlines = (PagePageFilterInlineAdmin, )
 
     fieldsets = (
 
