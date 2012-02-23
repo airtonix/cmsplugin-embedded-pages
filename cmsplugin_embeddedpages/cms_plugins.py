@@ -19,27 +19,15 @@ from .models import (
     TEMPLATE_PATH,
 )
 
-<<<<<<< HEAD
-from .forms import EmbedPagesAdminForm
 
-
-class EmbedPages(CMSPluginBase):
-    model = Settings
-=======
 class PagePlugin(CMSPluginBase):
     model = PagePluginSettings
->>>>>>> b1cbd94f3893f05a316f8f78d619677c297adeb1
     name = _("Embedded Pages")
     render_template = "cmsplugin_embeddedpages/base.html"
     default_template = os.path.join(TEMPLATE_PATH, "default.html")
     admin_preview = False
-<<<<<<< HEAD
     form = EmbedPagesAdminForm
 #    inlines = (EmbeddedPageFilterInlineAdmin, )
-=======
-    filter_horizontal = ('placeholders', )
-    form = PagePluginAdminForm
->>>>>>> b1cbd94f3893f05a316f8f78d619677c297adeb1
 
     fieldsets = (
 
