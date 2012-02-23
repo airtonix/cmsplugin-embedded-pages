@@ -1,0 +1,22 @@
+{% load cms_tags sekizai_tags %}
+        <div class="embedded-page row"
+             id="{{ EmbeddedPage.get_slug }}"
+             data-page-id="{{ EmbeddedPage.get_slug }}"
+             data-placeholders="{{ EmbeddedPage.placeholders.all|join:', ' }}">
+
+          <div class="header embedded-page-header">
+            <h2 id="{{ EmbeddedPage.get_title|slugify }}">{{ EmbeddedPage.get_title }}</h2>
+            <a class="hash" name="#{{ EmbeddedPage.get_title|slugify }}"></a>
+          </div>
+
+          <div class="content embedded-page-content">
+            {% for placeholder in EmbeddedPage.placeholders.all %}{% spaceless %}
+              <div class="embedded-page-placeholder"
+                   data-placeholder-id="{{ placeholder.id }}"
+                   data-placeholder-slot="{{ placeholder.slot }}">
+                  {% show_uncached_placeholder placeholder.slot  EmbeddedPage.id %}
+              </div>
+            {% endspaceless %}{% endfor %}
+          </div>
+
+        </div>

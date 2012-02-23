@@ -33,5 +33,4 @@ setup(
     keywords='django-cms, plugin, pages',
     url='http://github.com/airtonix/cmsplugin-embedded-pages',
     include_package_data=True,
-    zip_safe = False,
 )

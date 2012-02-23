@@ -3,41 +3,56 @@ import os
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 
+
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from cms.models.pluginmodel import CMSPlugin
+
 from cms.models.pagemodel import Page
 
+from .forms import PagePluginAdminForm
+
 from .models import (
-    Settings,
-    Ruleset,
-    FilterRules,
+    PagePluginSettings,
+#    Ruleset,
+#    FilterRules,
     TEMPLATE_PATH,
 )
 
+<<<<<<< HEAD
 from .forms import EmbedPagesAdminForm
 
 
 class EmbedPages(CMSPluginBase):
     model = Settings
+=======
+class PagePlugin(CMSPluginBase):
+    model = PagePluginSettings
+>>>>>>> b1cbd94f3893f05a316f8f78d619677c297adeb1
     name = _("Embedded Pages")
     render_template = "cmsplugin_embeddedpages/base.html"
     default_template = os.path.join(TEMPLATE_PATH, "default.html")
     admin_preview = False
+<<<<<<< HEAD
     form = EmbedPagesAdminForm
 #    inlines = (EmbeddedPageFilterInlineAdmin, )
+=======
+    filter_horizontal = ('placeholders', )
+    form = PagePluginAdminForm
+>>>>>>> b1cbd94f3893f05a316f8f78d619677c297adeb1
 
-#    fieldsets = (
-#      ('',
-#          {'fields': [ ('include_root', 'page_id'),
-#                       ('placeholders', )
-#                      ]}),
+    fieldsets = (
 
-#      ('Display Template',
-#          {'fields': [ ('template', ),
-#                      ]}),
+      ('Display Template',
+          {'fields': [ ('group_template', 'page_template', ),
+                      ]}),
+      ('Include',
+          {'fields': [ ('root','include_root', ),
+                       ('depth', ),
+                       ('placeholders', )
+                      ]}),
 
-#    )
+    )
 
     def render(self, context, instance, placeholder):
         root_page = None
@@ -45,38 +60,29 @@ class EmbedPages(CMSPluginBase):
         # get the root
 
         try :
-            root_page = Page.objects.get(reverse_id = instance.page_id)
 
             if instance.include_root:
                 # if settings say, attach root as well, then do it here.
-                pages += (root_page, )
+                pages += (instance.root, )
 
             try :
-                pages = Page.objects.filter(parent=root_page,
+                pages = Page.objects.filter(parent=instance.root,
                                              published=True,
                                              in_navigation=True)
 
 #                if instance.filter_actions and instance.filter_attributes:
 #                    pages = getattr(pages, instance.filter_actions)(reverse_id = instance.filter_attributes)
 
-                for page in pages:
-                    pages += (page, )
-
             except:
                 pass
 
-        except Page.DoesNotExist, error:
-            # no root page matching set id, bail out here.
-            context['error'] = error
         except Exception, error:
-            # no root page matching set id, bail out here.
-            context['error'] = error
+            pass
 
         context.update({
-          'EmbededPages': pages,
-#          'Template' : instance.template if instance.template else self.default_template
+          'EmbeddedPages': pages,
         })
 
         return context
 
-plugin_pool.register_plugin(EmbedPages)
+plugin_pool.register_plugin(PagePlugin)

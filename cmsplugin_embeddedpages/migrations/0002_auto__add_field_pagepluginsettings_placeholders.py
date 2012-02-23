@@ -8,20 +8,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'PagePluginSettings'
-        db.create_table('cmsplugin_pagepluginsettings', (
-            ('cmsplugin_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['cms.CMSPlugin'], unique=True, primary_key=True)),
-            ('root', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['cms.Page'])),
-            ('include_root', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('template', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True)),
-        ))
-        db.send_create_signal('cmsplugin_embeddedpages', ['PagePluginSettings'])
+        # Adding field 'PagePluginSettings.placeholders'
+        db.add_column('cmsplugin_pagepluginsettings', 'placeholders', self.gf('django.db.models.fields.CharField')(max_length=128, null=True, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Deleting model 'PagePluginSettings'
-        db.delete_table('cmsplugin_pagepluginsettings')
+        # Deleting field 'PagePluginSettings.placeholders'
+        db.delete_column('cmsplugin_pagepluginsettings', 'placeholders')
 
 
     models = {
@@ -78,6 +72,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'PagePluginSettings', 'db_table': "'cmsplugin_pagepluginsettings'", '_ormbases': ['cms.CMSPlugin']},
             'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
             'include_root': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'placeholders': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True', 'blank': 'True'}),
             'root': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Page']"}),
             'template': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'})
         },

@@ -1,17 +1,20 @@
 import os
 
 from django.db import models
+
 from cms.models.pluginmodel import CMSPlugin
 
 from .lib.choices import (
   DynamicTemplateChoices,
   PlaceholdersDynamicChoices,
-  PageIDsDynamicChoices,
-  PageAttributeDynamicChoices,
+#  PageIDsDynamicChoices,
+#  PageAttributeDynamicChoices,
 )
 
 
 TEMPLATE_PATH = os.path.join("cmsplugin_embeddedpages","layouts")
+GROUP_TEMPLATE_PATH = os.path.join(TEMPLATE_PATH, "groups")
+PAGE_TEMPLATE_PATH = os.path.join(TEMPLATE_PATH, "pages")
 
 #class FilterRule(models.Model):
 #    QUERY_ACTION_CHOICES = (
@@ -48,41 +51,55 @@ TEMPLATE_PATH = os.path.join("cmsplugin_embeddedpages","layouts")
 #    view = models.ForeignKey('Settings')
 #    description = models.CharField(max_length=128)
 
-class Settings(CMSPlugin):
+
+
+class PagePluginSettings(CMSPlugin):
     """ Stores options for cmsplugin that shows lists of ProductTypes
     """
+    group_template = models.CharField(choices=DynamicTemplateChoices(
+                                          path=GROUP_TEMPLATE_PATH,
+                                          include='.html',
+                                          exclude='base'),
+      max_length=256, blank=True, null=True,
+      help_text="""Select a template to render this
+      list. Templates are stored in : {0}""".format(GROUP_TEMPLATE_PATH))
 
-    TEMPLATE_CHOICES = DynamicTemplateChoices(
-            path=TEMPLATE_PATH,
-            include='.html',
-            exclude='base')
+    page_template = models.CharField(choices=DynamicTemplateChoices(
+                                          path=PAGE_TEMPLATE_PATH,
+                                          include='.html',
+                                          exclude='base'),
+      max_length=256, blank=True, null=True,
+      help_text="""Select a template to render this
+      list. Templates are stored in : {0}""".format(PAGE_TEMPLATE_PATH))
 
-    page_id = models.CharField("Show sub pages of",
-      choices=PageIDsDynamicChoices(), max_length=50, default='home',
+    root = models.ForeignKey("cms.Page",
       help_text="""Start including pages at a page which has this ID""")
+
+    placeholders = models.CharField(blank=True, null=True, 
+      choices = PlaceholdersDynamicChoices(), max_length=128,
+      help_text="""Only render content within these placeholders.""")
 
     include_root = models.BooleanField(default=True,
       help_text="""Should the root page also be included in the output?
         If the root page is also the page where this plugin is being used then
         it will never be included. (to prevent recursion)""")
 
-   levels_deep = models.PositiveIntegerField(default=0,
-     help_text="""How far down the tree should pages be included for
-     embedding?""")
+    placeholders = models.CharField( choices = PlaceholdersDynamicChoices(),
+      max_length=128, blank=True, null=True, 
+      help_text="""Only render content within placeholders of these names.""")
 
-   placeholders = models.CharField( choices = PlaceholdersDynamicChoices(),
-     max_length=128, blank=True, null=True, 
-     help_text="""Only render content within placeholders of these names.""")
+    depth = models.PositiveIntegerField(default=0,
+      help_text="""How deep should menu traversal go?""")
 
 #    filters = models.ManyToManyField('FilterRule',
 #      through = Ruleset,
 #      help_text="""Page attributes to perform filters on.""")
 
-    template = models.CharField(choices=TEMPLATE_CHOICES,
-      max_length=256, blank=True, null=True,
-      help_text="""Select a template to render this
-      list. Templates are stored in : {0}""".format(TEMPLATE_PATH))
-
-#    def __unicode__(self):
-#        return U"Root:{0}, levels: {1}, Placeholders: {2}".format(
-#          self.page_id, self.levels_deep, self.placeholders)
+    def __unicode__(self):
+        output = U"[{0}] {1}".format(
+          self.root.id,
+          self.root.get_slug(),
+        )
+        if self.depth >= 0:
+          output = U"{0}, Traversing: {1} level".format(output, self.depth)
+        return output
