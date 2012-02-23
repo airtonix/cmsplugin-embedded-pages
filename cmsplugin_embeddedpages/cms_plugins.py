@@ -17,14 +17,14 @@ from .models import (
 
 from .forms import EmbedPagesAdminForm
 
+
 class EmbedPages(CMSPluginBase):
     model = Settings
     name = _("Embedded Pages")
     render_template = "cmsplugin_embeddedpages/base.html"
     default_template = os.path.join(TEMPLATE_PATH, "default.html")
     admin_preview = False
-#    form = EmbedPagesAdminForm
-#    filter_horizontal = ('placeholders',)
+    form = EmbedPagesAdminForm
 #    inlines = (EmbeddedPageFilterInlineAdmin, )
 
 #    fieldsets = (

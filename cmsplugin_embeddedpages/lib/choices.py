@@ -1,9 +1,13 @@
 import os
-
+import logging
+from django.db.utils import DatabaseError
 from django.template.loader import get_template
 from django.template.loaders.app_directories import app_template_dirs
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
+
+
+logger = logging.getLogger(__name__)
 
 try:
   from cms.models import Placeholder, Page
@@ -16,24 +20,30 @@ class DynamicChoice(object):
     """
     Trivial example of creating a dynamic choice
     """
+
     def __iter__(self, *args, **kwargs):
-        for choice in self.generate():
-            if hasattr(choice,'__iter__'):
-                yield (choice[0], choice[1])
-            else:
-                yield choice, choice
+        try:
+            for choice in self.generate():
+                if hasattr(choice,'__iter__'):
+                    yield (choice[0], choice[1])
+                else:
+                    yield choice, choice
+
+        except DatabaseError, error:
+            logger.exception(error)
+
 
     def __init__(self, *args, **kwargs):
         """
         If you do it here it is only initialized once. Then just return generated.
         """
-        self.generated = range(10)
+        pass
 
     def generate(self, *args, **kwargs):
         """
         If you do it here it is  initialized every time the iterator is used.
         """
-        return range(10)
+        pass
 
 
 class PageAttributeDynamicChoices(DynamicChoice):

@@ -10,6 +10,7 @@ from .lib.choices import (
   PageAttributeDynamicChoices,
 )
 
+
 TEMPLATE_PATH = os.path.join("cmsplugin_embeddedpages","layouts")
 
 #class FilterRule(models.Model):
@@ -65,13 +66,13 @@ class Settings(CMSPlugin):
         If the root page is also the page where this plugin is being used then
         it will never be included. (to prevent recursion)""")
 
-#    levels_deep = models.PositiveIntegerField(default=0,
-#      help_text="""How far down the tree should pages be included for
-#      embedding?""")
+   levels_deep = models.PositiveIntegerField(default=0,
+     help_text="""How far down the tree should pages be included for
+     embedding?""")
 
-#    placeholders = models.CharField(choices=PlaceholdersDynamicChoices(),
-#      max_length=128, blank=True, null=True, help_text="""Only render content
-#      within placeholders of these names.""")
+   placeholders = models.CharField( choices = PlaceholdersDynamicChoices(),
+     max_length=128, blank=True, null=True, 
+     help_text="""Only render content within placeholders of these names.""")
 
 #    filters = models.ManyToManyField('FilterRule',
 #      through = Ruleset,
